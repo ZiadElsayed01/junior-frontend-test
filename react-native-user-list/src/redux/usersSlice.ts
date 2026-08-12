@@ -1,15 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { User } from "../types/user";
-
-const API = "https://jsonplaceholder.typicode.com/users";
-const KEY = "@fekra/users";
-
+const API = "https://jsonplaceholder.typicode.com/users",
+  KEY = "@fekra/users";
 interface Result {
   users: User[];
   fromCache: boolean;
 }
-
 interface State {
   items: User[];
   status: "idle" | "loading" | "succeeded" | "failed";
@@ -40,8 +37,7 @@ export const fetchUsers = createAsyncThunk<
   } catch (e) {
     try {
       const c = await AsyncStorage.getItem(KEY);
-      if (c)
-        return { users: JSON.parse(c) as User[], fromCache: true };
+      if (c) return { users: JSON.parse(c) as User[], fromCache: true };
     } catch {}
     return api.rejectWithValue(
       e instanceof Error ? e.message : "Unable to load users.",

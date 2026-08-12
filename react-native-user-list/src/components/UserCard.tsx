@@ -1,5 +1,5 @@
 ﻿import { memo } from "react";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import type { User } from "../types/user";
 
 function UserCard({ user }: { user: User }) {
@@ -7,28 +7,47 @@ function UserCard({ user }: { user: User }) {
     .filter(Boolean)
     .join(", ");
   return (
-    <View className="flex-row p-4 mb-[10px] bg-card rounded-lg border border-border">
-      <View className="w-11 h-11 rounded-full items-center justify-center bg-primary mr-3">
-        <Text className="text-primary-foreground text-[17px] font-extrabold">
-          {user.name.charAt(0).toUpperCase()}
-        </Text>
+    <View style={s.card}>
+      <View style={s.avatar}>
+        <Text style={s.avatarText}>{user.name.charAt(0).toUpperCase()}</Text>
       </View>
-      <View className="flex-1">
-        <Text className="text-foreground text-[16px] font-extrabold" numberOfLines={1}>
+      <View style={s.content}>
+        <Text style={s.name} numberOfLines={1}>
           {user.name}
         </Text>
-        <Text className="mt-[3px] text-muted-foreground text-[13px]" numberOfLines={1}>
+        <Text style={s.email} numberOfLines={1}>
           {user.email}
         </Text>
-        <Text
-          className="mt-[5px] text-muted-foreground text-[12px] leading-[17px]"
-          numberOfLines={2}
-        >
+        <Text style={s.address} numberOfLines={2}>
           {address}
         </Text>
       </View>
     </View>
   );
 }
-
 export default memo(UserCard);
+const s = StyleSheet.create({
+  card: {
+    flexDirection: "row",
+    padding: 16,
+    marginBottom: 10,
+    backgroundColor: "#fff",
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "#e5e9ef",
+  },
+  avatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#635bff",
+    marginRight: 12,
+  },
+  avatarText: { color: "#fff", fontSize: 17, fontWeight: "800" },
+  content: { flex: 1 },
+  name: { color: "#182235", fontSize: 16, fontWeight: "800" },
+  email: { marginTop: 3, color: "#5d687b", fontSize: 13 },
+  address: { marginTop: 5, color: "#8a94a6", fontSize: 12, lineHeight: 17 },
+});

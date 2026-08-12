@@ -4,6 +4,7 @@ import {
   FlatList,
   RefreshControl,
   SafeAreaView,
+  StyleSheet,
   Text,
   View,
 } from "react-native";
@@ -16,9 +17,11 @@ import type { User } from "../types/user";
 
 export default function UserListScreen() {
   const d = useAppDispatch();
+
   const { items, status, error, fromCache, visibleCount } = useAppSelector(
     (s) => s.users,
   );
+
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -27,9 +30,7 @@ export default function UserListScreen() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return q
-      ? items.filter((u) => u.name.toLowerCase().includes(q))
-      : items;
+    return q ? items.filter((u) => u.name.toLowerCase().includes(q)) : items;
   }, [items, search]);
 
   const visible = useMemo(
@@ -41,11 +42,13 @@ export default function UserListScreen() {
     ({ item }: { item: User }) => <UserCard user={item} />,
     [],
   );
+
   const keyExtractor = useCallback((item: User) => String(item.id), []);
 
   const refresh = useCallback(() => {
     d(fetchUsers());
   }, [d]);
+
   const more = useCallback(() => {
     d(loadMore());
   }, [d]);
@@ -55,50 +58,40 @@ export default function UserListScreen() {
 
   if (loading && !items.length)
     return (
-      <SafeAreaView className="flex-1 items-center justify-center p-6 bg-background">
-        <ActivityIndicator size="large" color="#000000" />
-        <Text className="mt-2 text-muted-foreground text-center">
-          Loading users...
-        </Text>
+      <SafeAreaView style={s.center}>
+        <ActivityIndicator size="large" color="#635bff" />
+        <Text style={s.muted}>Loading users...</Text>
       </SafeAreaView>
     );
 
   if (status === "failed" && !items.length)
     return (
-      <SafeAreaView className="flex-1 items-center justify-center p-6 bg-background">
-        <Text className="text-foreground text-[18px] font-extrabold">
-          Could not load users
-        </Text>
-        <Text className="mt-2 text-muted-foreground text-center">{error}</Text>
-        <Text
-          className="mt-4 text-primary font-extrabold"
-          onPress={refresh}
-        >
+      <SafeAreaView style={s.center}>
+        <Text style={s.error}>Could not load users</Text>
+        <Text style={s.muted}>{error}</Text>
+        <Text style={s.retry} onPress={refresh}>
           Tap to retry
         </Text>
       </SafeAreaView>
     );
-
+    
   return (
-    <SafeAreaView className="flex-1 bg-background">
-      <View className="flex-1 px-4">
-        <View className="pt-[14px] pb-[18px]">
-          <Text className="text-[32px] font-black text-foreground">Users</Text>
-          <Text className="mt-1 text-[13px] text-muted-foreground">
+    <SafeAreaView style={s.safe}>
+      <View style={s.container}>
+        <View style={s.header}>
+          <Text style={s.title}>Users</Text>
+          <Text style={s.subtitle}>
             {fromCache ? "Offline cached data" : `${items.length} users`}
           </Text>
         </View>
-
         <SearchBar value={search} onChangeText={setSearch} />
-
         {status === "failed" && items.length > 0 && (
-          <View className="mb-3 p-2.5 rounded-md bg-warning">
-            <Text className="text-warning-foreground text-[12px] font-bold">
+          <View style={s.warning}>
+            <Text style={s.warningText}>
               Network unavailable. Showing cached users.
             </Text>
           </View>
         )}
-
         <FlatList
           data={visible}
           renderItem={renderItem}
@@ -111,17 +104,13 @@ export default function UserListScreen() {
             <RefreshControl
               refreshing={loading}
               onRefresh={refresh}
-              tintColor="#000000"
+              tintColor="#635bff"
             />
           }
           ListEmptyComponent={
-            <View className="pt-20 items-center">
-              <Text className="text-foreground text-[18px] font-extrabold">
-                No users found
-              </Text>
-              <Text className="text-muted-foreground mt-2">
-                Try another name.
-              </Text>
+            <View style={s.empty}>
+              <Text style={s.error}>No users found</Text>
+              <Text style={s.muted}>Try another name.</Text>
             </View>
           }
           ListFooterComponent={
@@ -129,9 +118,36 @@ export default function UserListScreen() {
               <LoadMoreButton onPress={more} disabled={!canMore} />
             ) : null
           }
-          contentContainerStyle={{ paddingBottom: 8 }}
+          contentContainerStyle={s.list}
         />
       </View>
     </SafeAreaView>
   );
 }
+
+const s = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: "#f5f7fb" },
+  container: { flex: 1, paddingHorizontal: 16 },
+  header: { paddingTop: 14, paddingBottom: 18 },
+  title: { fontSize: 32, fontWeight: "900", color: "#182235" },
+  subtitle: { marginTop: 4, fontSize: 13, color: "#7a8496" },
+  list: { paddingBottom: 8 },
+  center: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 24,
+    backgroundColor: "#f5f7fb",
+  },
+  muted: { marginTop: 8, color: "#7a8496", textAlign: "center" },
+  error: { color: "#182235", fontSize: 18, fontWeight: "800" },
+  retry: { marginTop: 16, color: "#635bff", fontWeight: "800" },
+  warning: {
+    marginBottom: 12,
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: "#fff4dc",
+  },
+  warningText: { color: "#8a6500", fontSize: 12, fontWeight: "700" },
+  empty: { paddingTop: 80, alignItems: "center" },
+});

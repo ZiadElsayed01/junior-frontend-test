@@ -1,27 +1,31 @@
 ﻿import { memo } from "react";
-import { Pressable, Text } from "react-native";
-
+import { Pressable, StyleSheet, Text } from "react-native";
 interface Props {
   onPress: () => void;
   disabled: boolean;
 }
-
 function LoadMoreButton({ onPress, disabled }: Props) {
   return (
     <Pressable
       onPress={onPress}
       disabled={disabled}
-      className={
-        disabled
-          ? "items-center justify-center min-h-[46px] rounded-md bg-muted mt-1 mb-5"
-          : "items-center justify-center min-h-[46px] rounded-md bg-primary mt-1 mb-5"
-      }
+      style={[s.button, disabled && s.disabled]}
     >
-      <Text className={disabled ? "text-muted-foreground text-[14px] font-extrabold" : "text-primary-foreground text-[14px] font-extrabold"}>
-        {disabled ? "All users loaded" : "Load More"}
-      </Text>
+      <Text style={s.text}>{disabled ? "All users loaded" : "Load More"}</Text>
     </Pressable>
   );
 }
-
 export default memo(LoadMoreButton);
+const s = StyleSheet.create({
+  button: {
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: 46,
+    borderRadius: 12,
+    backgroundColor: "#635bff",
+    marginTop: 4,
+    marginBottom: 20,
+  },
+  disabled: { backgroundColor: "#b6bbc7" },
+  text: { color: "#fff", fontSize: 14, fontWeight: "800" },
+});
