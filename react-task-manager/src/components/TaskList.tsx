@@ -4,10 +4,12 @@ import TaskItem from "./TaskItem";
 import type { Task } from "../types/task";
 
 export default function TaskList({ onEdit }: { onEdit: (task: Task) => void }) {
+  // Selectors
   const { items, priorityFilter, statusFilter } = useAppSelector(
     (s) => s.tasks,
   );
 
+  // Filter tasks based on priority and status
   const tasks = useMemo(
     () =>
       items.filter(
@@ -20,10 +22,11 @@ export default function TaskList({ onEdit }: { onEdit: (task: Task) => void }) {
     [items, priorityFilter, statusFilter],
   );
 
+  // No tasks found
   if (!tasks.length)
     return (
       <div className="text-center py-12 px-5">
-        <div className="grid place-items-center w-12 h-12 mx-auto rounded-full bg-secondary text-foreground font-black">
+        <div className="grid place-items-center w-12 h-12 mx-auto bg-secondary text-foreground font-black">
           ✓
         </div>
         <h3 className="mt-[14px] mb-1.5 font-bold">No tasks found</h3>
@@ -35,6 +38,7 @@ export default function TaskList({ onEdit }: { onEdit: (task: Task) => void }) {
 
   return (
     <div className="grid gap-2.5">
+      {/* Task items */}
       {tasks.map((t) => (
         <TaskItem key={t.id} task={t} onEdit={onEdit} />
       ))}

@@ -20,7 +20,10 @@ const statuses: Array<[StatusFilter, string]> = [
 ];
 
 export default function TaskFilters() {
+  // Dispatch hook
   const d = useAppDispatch();
+
+  // Selectors
   const { priorityFilter, statusFilter, items } = useAppSelector(
     (s) => s.tasks,
   );
@@ -31,6 +34,8 @@ export default function TaskFilters() {
         <span className="block text-xs font-extrabold text-muted-foreground mb-2 uppercase">
           Priority
         </span>
+
+        {/* Priority buttons */}
         <div className="flex gap-1.5">
           {priorities.map(([v, l]) => (
             <button
@@ -38,8 +43,8 @@ export default function TaskFilters() {
               key={v}
               className={
                 priorityFilter === v
-                  ? "border border-primary bg-primary text-primary-foreground rounded-[9px] px-3 py-2 font-medium"
-                  : "border border-border bg-background rounded-[9px] px-3 py-2 text-muted-foreground hover:bg-muted transition-colors"
+                  ? "border border-primary bg-primary text-primary-foreground px-3 py-2 font-medium"
+                  : "border border-border bg-background px-3 py-2 text-muted-foreground hover:bg-muted transition-colors"
               }
               onClick={() => d(setPriorityFilter(v))}
             >
@@ -53,6 +58,8 @@ export default function TaskFilters() {
         <span className="block text-xs font-extrabold text-muted-foreground mb-2 uppercase">
           Status
         </span>
+
+        {/* Status buttons */}
         <div className="flex gap-1.5">
           {statuses.map(([v, l]) => (
             <button
@@ -60,8 +67,8 @@ export default function TaskFilters() {
               key={v}
               className={
                 statusFilter === v
-                  ? "border border-primary bg-primary text-primary-foreground rounded-[9px] px-3 py-2 font-medium"
-                  : "border border-border bg-background rounded-[9px] px-3 py-2 text-muted-foreground hover:bg-muted transition-colors"
+                  ? "border border-primary bg-primary text-primary-foreground px-3 py-2 font-medium"
+                  : "border border-border bg-background px-3 py-2 text-muted-foreground hover:bg-muted transition-colors"
               }
               onClick={() => d(setStatusFilter(v))}
             >
@@ -71,6 +78,7 @@ export default function TaskFilters() {
         </div>
       </div>
 
+      {/* Clear completed button */}
       {items.some((t) => t.completed) && (
         <button
           type="button"

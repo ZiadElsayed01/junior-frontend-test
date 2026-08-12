@@ -1,5 +1,8 @@
 import type { Task } from "../types/task";
+
 const KEY = "fekra-task-manager-tasks";
+
+// Type guard for Task
 const isTask = (v: unknown): v is Task => {
   if (!v || typeof v !== "object") return false;
   const x = v as Record<string, unknown>;
@@ -10,6 +13,8 @@ const isTask = (v: unknown): v is Task => {
     ["high", "medium", "low"].includes(x.priority as string)
   );
 };
+
+// Get stored tasks from localStorage
 export const getStoredTasks = (): Task[] => {
   try {
     const raw = localStorage.getItem(KEY);
@@ -19,6 +24,8 @@ export const getStoredTasks = (): Task[] => {
     return [];
   }
 };
+
+// Save tasks to localStorage
 export const saveTasks = (tasks: Task[]) => {
   try {
     localStorage.setItem(KEY, JSON.stringify(tasks));

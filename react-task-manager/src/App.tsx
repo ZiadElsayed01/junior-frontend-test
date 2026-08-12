@@ -6,10 +6,13 @@ import TaskList from "./components/TaskList";
 import type { Task } from "./types/task";
 
 export default function App() {
+  // State for editing task
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
+  // Selectors
   const tasks = useAppSelector((s) => s.tasks.items);
 
+  // Stats
   const stats = useMemo(
     () => ({
       total: tasks.length,
@@ -22,6 +25,7 @@ export default function App() {
   return (
     <main className="w-[min(calc(100%-32px),980px)] mx-auto py-12">
       <header className="flex justify-between items-end gap-6 mb-7 max-[680px]:block">
+        {/* Header content */}
         <div>
           <p className="text-foreground text-[12px] font-extrabold tracking-[0.12em] uppercase mb-2">
             Fekra Coding Test
@@ -29,16 +33,14 @@ export default function App() {
           <h1 className="m-0 text-[clamp(34px,6vw,54px)] font-bold leading-tight">
             Task Manager
           </h1>
-          <p className="text-muted-foreground">
-            React + TypeScript + Redux Toolkit
-          </p>
         </div>
 
+        {/* Stats */}
         <div className="flex gap-2.5 max-[680px]:mt-[18px]">
           {Object.entries(stats).map(([k, v]) => (
             <div
               key={k}
-              className="min-w-[82px] p-3.5 bg-card border border-border rounded-[14px] text-center"
+              className="min-w-[82px] p-3.5 bg-card border border-border text-center"
             >
               <strong className="block text-2xl">{v}</strong>
               <span className="block text-xs text-muted-foreground capitalize">
@@ -49,21 +51,19 @@ export default function App() {
         </div>
       </header>
 
-      <section className="bg-card border border-border rounded-[20px] p-[22px] mb-[18px] shadow-[0_12px_40px_rgba(0,0,0,0.05)]">
+      {/* Task form */}
+      <section className="bg-card border border-border p-[22px] mb-[18px] shadow-[0_12px_40px_rgba(0,0,0,0.05)]">
         <TaskForm
           editingTask={editingTask}
           onFinishEdit={() => setEditingTask(null)}
         />
       </section>
 
-      <section className="bg-card border border-border rounded-[20px] p-[22px] mb-[18px] shadow-[0_12px_40px_rgba(0,0,0,0.05)]">
+      {/* Task list */}
+      <section className="bg-card border border-border p-[22px] mb-[18px] shadow-[0_12px_40px_rgba(0,0,0,0.05)]">
         <TaskFilters />
         <TaskList onEdit={setEditingTask} />
       </section>
-
-      <footer className="text-center text-xs text-muted-foreground p-2.5">
-        Tasks are automatically persisted in localStorage.
-      </footer>
     </main>
   );
 }
