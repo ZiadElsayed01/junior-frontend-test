@@ -1,6 +1,0 @@
-node_modules
-dist
-.env
-.expo
-.expo-shared
-web-build
